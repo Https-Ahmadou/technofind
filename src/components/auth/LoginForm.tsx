@@ -30,7 +30,7 @@ export function LoginForm() {
       const res = await apiClient.post<{ user: User; tokens: AuthTokens }>(
         '/auth/login', data
       );
-      localStorage.setItem('access_token', res.tokens.accessToken);
+     try { localStorage.setItem('access_token', res.tokens.accessToken); } catch {}
       setUser(res.user, res.tokens.accessToken);
       router.push('/feed');
     } catch (err: unknown) {

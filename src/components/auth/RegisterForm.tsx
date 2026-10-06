@@ -47,7 +47,7 @@ export function RegisterForm() {
         confirmPassword: data.confirmPassword  // ← ajoute cette ligne
       }
     );
-    localStorage.setItem('access_token', res.tokens.accessToken);
+   try { localStorage.setItem('access_token', res.tokens.accessToken); } catch {}
     setUser(res.user, res.tokens.accessToken);
     router.push('/feed');
   } catch (err: unknown) {

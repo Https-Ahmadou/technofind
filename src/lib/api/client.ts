@@ -1,16 +1,22 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// Client HTTP frontend — wraps fetch avec auth + gestion d'erreurs
-// ─────────────────────────────────────────────────────────────────────────────
 import { ApiError } from '@/types';
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || '';
+
+function getToken(): string | null {
+  try {
+    return typeof window !== 'undefined'
+      ? localStorage.getItem('access_token')
+      : null;
+  } catch {
+    return null;
+  }
+}
 
 async function request<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const accessToken =
-    typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+  const accessToken = getToken();
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',

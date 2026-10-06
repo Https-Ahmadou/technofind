@@ -1,8 +1,22 @@
-import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { apiClient } from '@/lib/api/client';
 import { useAuthStore } from '@/store/auth.store';
-import { AuthTokens, User } from '@/types';
+import { apiClient } from '@/lib/api/client';
+
+function setToken(token: string) {
+  try {
+    localStorage.setItem('access_token', token);
+  } catch {
+    // localStorage non disponible (mode privé Safari)
+  }
+}
+
+function removeToken() {
+  try {
+    localStorage.removeItem('access_token');
+  } catch {
+    // ignore
+  }
+}
 
 export function useLogout() {
   const { logout } = useAuthStore();
@@ -14,7 +28,7 @@ export function useLogout() {
     } catch {
       // ignore
     }
-    localStorage.removeItem('access_token');
+    removeToken();
     logout();
     router.push('/login');
   };
