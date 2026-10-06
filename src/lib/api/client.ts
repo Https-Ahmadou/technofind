@@ -1,7 +1,5 @@
 import { ApiError } from '@/types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || '';
-
 function getToken(): string | null {
   try {
     return typeof window !== 'undefined'
@@ -24,7 +22,8 @@ async function request<T>(
     ...options.headers,
   };
 
-  const res = await fetch(`${BASE_URL}/api${endpoint}`, {
+  // URL relative — fonctionne partout (local + Vercel)
+  const res = await fetch(`/api${endpoint}`, {
     ...options,
     headers,
   });
