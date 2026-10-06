@@ -4,17 +4,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Home, TrendingUp, LayoutGrid, Bookmark, Settings,
-  Globe, Cpu, Briefcase, Heart, FlaskConical, Trophy, Leaf, Users,
+  Globe, Cpu, Briefcase, Heart, FlaskConical, Trophy, Leaf, Users, Bell,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Bell, ... } from 'lucide-react';
 
 const mainLinks = [
   { href: '/feed',       icon: Home,        label: 'Accueil'     },
   { href: '/trends',     icon: TrendingUp,  label: 'Tendances'   },
   { href: '/categories', icon: LayoutGrid,  label: 'Catégories'  },
   { href: '/saved',      icon: Bookmark,    label: 'Sauvegardés' },
-  { href: '/alerts', icon: Bell, label: 'Alertes' },
+  { href: '/alerts',     icon: Bell,        label: 'Alertes'     },
 ];
 
 const categories = [
