@@ -10,6 +10,7 @@ import {
 import { useAuthStore } from '@/store/auth.store';
 import { useFeedStore } from '@/store/feed.store';
 import { useLogout } from '@/lib/hooks/useAuth';
+import { usePushNotifications } from '@/lib/hooks/usePushNotifications';
 import { cn } from '@/lib/utils';
 
 const THEMES = [
@@ -30,8 +31,16 @@ export function ProfilePage() {
   const logout = useLogout();
   const router = useRouter();
   const [theme, setTheme] = useState('light');
-  const [notifications, setNotifications] = useState(true);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
+  const {
+    isSupported,
+    isSubscribed,
+    permission,
+    isLoading,
+    subscribe,
+    sendTestNotification,
+  } = usePushNotifications();
 
   if (!isAuthenticated || !user) {
     return <NotConnected />;
@@ -112,7 +121,8 @@ export function ProfilePage() {
           </p>
           <div className="grid grid-cols-3 gap-2">
             {LAYOUTS.map(({ value, label }) => (
-              <button key={value} onClick={() => setLayout(value as 'list' | 'grid' | 'magazine')}
+              <button key={value}
+                onClick={() => setLayout(value as 'list' | 'grid' | 'magazine')}
                 className={cn(
                   'flex items-center justify-center gap-1.5 p-2.5 rounded-xl border-2 transition-all text-sm',
                   layout === value
@@ -129,12 +139,47 @@ export function ProfilePage() {
 
       {/* ── Notifications ───────────────────────────────── */}
       <Section title="Notifications" icon={<Bell className="w-4 h-4" />}>
-        <ToggleRow
-          label="Notifications push"
-          description="Recevoir les breaking news"
-          value={notifications}
-          onChange={setNotifications}
-        />
+        {!isSupported ? (
+          <p className="text-sm text-ink-muted">
+            Les notifications ne sont pas supportées sur ce navigateur.
+          </p>
+        ) : permission === 'denied' ? (
+          <p className="text-sm text-[#EF4444]">
+            Notifications bloquées. Autorisez-les dans les paramètres du navigateur.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium text-ink">Notifications push</p>
+                <p className="text-[11px] text-ink-faint">Recevoir les breaking news</p>
+              </div>
+              <button
+                onClick={subscribe}
+                disabled={isLoading}
+                className={cn(
+                  'w-11 h-6 rounded-full transition-colors relative shrink-0 disabled:opacity-50',
+                  isSubscribed || permission === 'granted' ? 'bg-accent' : 'bg-[#EDEAE5]'
+                )}>
+                <span className={cn(
+                  'absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform',
+                  isSubscribed || permission === 'granted'
+                    ? 'translate-x-5'
+                    : 'translate-x-0.5'
+                )} />
+              </button>
+            </div>
+
+            {(isSubscribed || permission === 'granted') && (
+              <button onClick={sendTestNotification}
+                className="flex items-center justify-center gap-2 py-2 rounded-xl
+                  border border-[#E8E5E0] text-sm text-ink-muted
+                  hover:border-accent hover:text-accent transition-colors">
+                🔔 Tester la notification
+              </button>
+            )}
+          </div>
+        )}
       </Section>
 
       {/* ── Compte ──────────────────────────────────────── */}
@@ -193,39 +238,14 @@ function Section({ title, icon, children }: {
   );
 }
 
-function ToggleRow({ label, description, value, onChange }: {
-  label:       string;
-  description: string;
-  value:       boolean;
-  onChange:    (v: boolean) => void;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <div>
-        <p className="text-sm font-medium text-ink">{label}</p>
-        <p className="text-[11px] text-ink-faint">{description}</p>
-      </div>
-      <button onClick={() => onChange(!value)}
-        className={cn(
-          'w-11 h-6 rounded-full transition-colors relative shrink-0',
-          value ? 'bg-accent' : 'bg-[#EDEAE5]'
-        )}>
-        <span className={cn(
-          'absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform',
-          value ? 'translate-x-5' : 'translate-x-0.5'
-        )} />
-      </button>
-    </div>
-  );
-}
-
 function MenuRow({ icon, label, value }: {
   icon:   React.ReactNode;
   label:  string;
   value?: string;
 }) {
   return (
-    <button className="flex items-center gap-3 w-full py-2 hover:text-accent transition-colors group">
+    <button className="flex items-center gap-3 w-full py-2
+      hover:text-accent transition-colors group">
       <span className="text-ink-faint group-hover:text-accent transition-colors">{icon}</span>
       <span className="flex-1 text-sm text-ink text-left">{label}</span>
       {value && <span className="text-[11px] text-ink-faint">{value}</span>}
@@ -243,7 +263,9 @@ function NotConnected() {
       </div>
       <div>
         <p className="font-display font-bold text-xl text-ink mb-2">Non connecté</p>
-        <p className="text-sm text-ink-muted">Connectez-vous pour accéder à votre profil.</p>
+        <p className="text-sm text-ink-muted">
+          Connectez-vous pour accéder à votre profil.
+        </p>
       </div>
       <button onClick={() => router.push('/login')}
         className="btn-accent w-auto px-8">

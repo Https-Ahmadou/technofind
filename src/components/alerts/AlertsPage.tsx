@@ -74,10 +74,10 @@ export function AlertsPage() {
 
   // Toggle actif/inactif
   const toggleMutation = useMutation({
-    mutationFn: ({ id, active }: { id: string; active: boolean }) =>
-      apiClient.post(`/alerts/${id}`, { active }),
-    onSuccess:  () => queryClient.invalidateQueries({ queryKey: ['alerts'] }),
-  });
+  mutationFn: ({ id, active }: { id: string; active: boolean }) =>
+    apiClient.put(`/alerts/${id}`, { active }),
+  onSuccess:  () => queryClient.invalidateQueries({ queryKey: ['alerts'] }),
+});
 
   function handleCreate() {
     if (!keyword.trim()) return;

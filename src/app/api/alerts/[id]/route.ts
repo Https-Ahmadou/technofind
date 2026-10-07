@@ -13,7 +13,7 @@ function getUserId(req: NextRequest): string | null {
   }
 }
 
-export async function PATCH(
+export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
@@ -26,11 +26,10 @@ export async function PATCH(
     await updateAlert(params.id, userId, body);
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('[PATCH /api/alerts/[id]]', err);
+    console.error('[PUT /api/alerts/[id]]', err);
     return NextResponse.json({ message: 'Erreur serveur' }, { status: 500 });
   }
 }
-
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
