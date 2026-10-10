@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import {
-  ArrowLeft, Bookmark, Share2, ExternalLink,
+  ArrowLeft, Bookmark,  ExternalLink,
   Pause, Volume2, Clock, Calendar,
   Globe, ChevronRight
 } from 'lucide-react';
@@ -13,6 +13,7 @@ import { apiClient } from '@/lib/api/client';
 import { Article } from '@/types';
 import { formatDate, estimateReadTime, cn } from '@/lib/utils';
 import { useFeedStore } from '@/store/feed.store';
+import { ShareButton } from '@/components/shared/ShareButton';
 
 const CAT_STYLES: Record<string, { bg: string; text: string }> = {
   technologie:   { bg: '#EFF6FF', text: '#2563EB' },
@@ -32,7 +33,6 @@ interface Props { articleUrl: string }
 export function ArticleDetail({ articleUrl }: Props) {
   const { savedIds, toggleSaved, selectedArticle } = useFeedStore();
   const [isPlaying, setIsPlaying] = useState(false);
-  const [shared,    setShared]    = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const { data: fetchedArticle, isLoading, isError } = useQuery({
@@ -66,17 +66,6 @@ export function ArticleDetail({ articleUrl }: Props) {
     setIsPlaying(true);
   }
 
-  async function handleShare() {
-    if (!article) return;
-    if (navigator.share) {
-      await navigator.share({ title: article.title, url: article.url });
-    } else {
-      await navigator.clipboard.writeText(article.url);
-      setShared(true);
-      setTimeout(() => setShared(false), 2000);
-    }
-  }
-
   if (isLoading && !selectedArticle) return <ArticleSkeleton />;
   if ((isError && !selectedArticle) || !article) return <ArticleError />;
 
@@ -98,7 +87,8 @@ export function ArticleDetail({ articleUrl }: Props) {
       <div className="card overflow-hidden">
         {image ? (
           <div className="relative aspect-video overflow-hidden">
-            <Image src={image.url} alt={image.alt || article.title} fill className="object-cover" priority />
+            <Image src={image.url} alt={image.alt || article.title}
+              fill className="object-cover" priority />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
             <div className="absolute bottom-4 left-4">
               <span className="badge text-[11px] font-semibold shadow-sm"
@@ -134,6 +124,7 @@ export function ArticleDetail({ articleUrl }: Props) {
           </div>
 
           <div className="flex items-center gap-2 pt-2 border-t border-[#E8E5E0]">
+            {/* Lecteur vocal */}
             <button onClick={toggleTTS}
               className={cn(
                 'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all',
@@ -147,29 +138,31 @@ export function ArticleDetail({ articleUrl }: Props) {
             </button>
 
             <div className="flex items-center gap-1 ml-auto">
-              <button onClick={() => toggleSaved(article.id)}
-                className={cn('w-9 h-9 flex items-center justify-center rounded-xl transition-colors',
-                  isSaved ? 'bg-accent/10 text-accent' : 'text-ink-faint hover:bg-[#FBF0EB] hover:text-accent')}>
+              {/* Sauvegarder */}
+              <button onClick={() => toggleSaved(article.id, article)}
+                className={cn(
+                  'w-9 h-9 flex items-center justify-center rounded-xl transition-colors',
+                  isSaved ? 'bg-accent/10 text-accent' : 'text-ink-faint hover:bg-[#FBF0EB] hover:text-accent'
+                )}>
                 <Bookmark className={cn('w-4 h-4', isSaved && 'fill-current')} />
               </button>
-              <button onClick={handleShare}
-                className="w-9 h-9 flex items-center justify-center rounded-xl relative text-ink-faint hover:bg-[#EDEAE5] hover:text-ink transition-colors">
-                <Share2 className="w-4 h-4" />
-                {shared && (
-                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-ink text-white text-[10px] px-2 py-1 rounded-md whitespace-nowrap">
-                    Copié !
-                  </span>
-                )}
-              </button>
+
+              {/* Partager */}
+              <ShareButton article={article} size="md" />
+
+              {/* Source */}
               <a href={article.url} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium bg-ink text-white hover:opacity-85 transition-opacity ml-1">
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
+                  bg-ink text-white hover:opacity-85 transition-opacity ml-1">
                 <ExternalLink className="w-3.5 h-3.5" /> Source
               </a>
             </div>
           </div>
 
+          {/* Visualisation audio */}
           {isPlaying && (
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#FBF0EB] border border-accent/20 animate-fade-up">
+            <div className="flex items-center gap-3 px-4 py-3 rounded-xl
+              bg-[#FBF0EB] border border-accent/20 animate-fade-up">
               <Volume2 className="w-4 h-4 text-accent shrink-0" />
               <div className="flex gap-0.5 items-end h-5">
                 {[...Array(12)].map((_, i) => (
@@ -191,7 +184,9 @@ export function ArticleDetail({ articleUrl }: Props) {
             {article.summary || article.content}
           </p>
           <a href={article.url} target="_blank" rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 mt-6 py-3 rounded-xl border-2 border-dashed border-[#E8E5E0] text-sm text-ink-muted hover:border-accent hover:text-accent transition-colors group">
+            className="flex items-center justify-center gap-2 mt-6 py-3 rounded-xl
+              border-2 border-dashed border-[#E8E5E0] text-sm text-ink-muted
+              hover:border-accent hover:text-accent transition-colors group">
             Lire l'article complet sur {article.source.name}
             <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </a>
@@ -231,7 +226,8 @@ function ArticleError() {
           <p className="text-sm text-ink-muted">Cet article n'est plus disponible.</p>
         </div>
         <Link href="/feed"
-          className="px-5 py-2 rounded-xl bg-accent text-white text-sm font-medium hover:opacity-90 shadow-accent">
+          className="px-5 py-2 rounded-xl bg-accent text-white text-sm font-medium
+            hover:opacity-90 shadow-accent">
           Retour au feed
         </Link>
       </div>

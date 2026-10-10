@@ -2,10 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Bookmark, Share2, ExternalLink, Clock } from 'lucide-react';
+import { Bookmark, ExternalLink, Clock } from 'lucide-react';
 import { Article } from '@/types';
 import { timeAgo, estimateReadTime, cn } from '@/lib/utils';
 import { useFeedStore } from '@/store/feed.store';
+import { ShareButton } from '@/components/shared/ShareButton';
 
 const CAT_STYLES: Record<string, { bg: string; text: string }> = {
   technologie:   { bg: '#EFF6FF', text: '#2563EB' },
@@ -134,11 +135,9 @@ function Actions({ article, isSaved, onToggle }: {
         )}>
         <Bookmark className={cn('w-3.5 h-3.5', isSaved && 'fill-current')} />
       </button>
-      <button aria-label="Partager"
-        className="w-7 h-7 flex items-center justify-center rounded-lg
-          text-ink-faint hover:text-ink hover:bg-[#EDEAE5] transition-colors">
-        <Share2 className="w-3.5 h-3.5" />
-      </button>
+
+      <ShareButton article={article} />
+
       <a href={article.url} target="_blank" rel="noopener noreferrer"
         aria-label="Source"
         className="w-7 h-7 flex items-center justify-center rounded-lg
