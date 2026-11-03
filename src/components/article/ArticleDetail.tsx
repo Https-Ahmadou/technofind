@@ -14,6 +14,7 @@ import { Article } from '@/types';
 import { formatDate, estimateReadTime, cn } from '@/lib/utils';
 import { useFeedStore } from '@/store/feed.store';
 import { ShareButton } from '@/components/shared/ShareButton';
+import { ReportButton } from '@/components/shared/ReportButton';
 
 const CAT_STYLES: Record<string, { bg: string; text: string }> = {
   technologie:   { bg: '#EFF6FF', text: '#2563EB' },
@@ -148,7 +149,8 @@ export function ArticleDetail({ articleUrl }: Props) {
               </button>
 
               {/* Partager */}
-              <ShareButton article={article} size="md" />
+             <ShareButton article={article} size="md" />
+<ReportButton article={article} size="md" />
 
               {/* Source */}
               <a href={article.url} target="_blank" rel="noopener noreferrer"
