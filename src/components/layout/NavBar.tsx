@@ -2,23 +2,25 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Search, Bell, Bookmark, User, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth.store';
 import { useState } from 'react';
 import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
 
-const navLinks = [
-  { href: '/feed',       label: 'Accueil'    },
-  { href: '/trends',     label: 'Tendances'  },
-  { href: '/categories', label: 'Catégories' },
-];
-
 export function NavBar() {
+  const t        = useTranslations('nav');
   const pathname = usePathname();
   const router   = useRouter();
   const { isAuthenticated, user } = useAuthStore();
   const [query, setQuery] = useState('');
+
+  const navLinks = [
+    { href: '/feed',       label: t('home')       },
+    { href: '/trends',     label: t('trends')     },
+    { href: '/categories', label: t('categories') },
+  ];
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -32,7 +34,7 @@ export function NavBar() {
       bg-[#F5F3EF]/95 backdrop-blur-md border-b border-[#E8E5E0]">
       <div className="max-w-screen-xl mx-auto h-full px-6 flex items-center gap-4">
 
-        {/* ── Logo ─────────────────────────────────────── */}
+        {/* Logo */}
         <Link href="/feed" className="flex items-center gap-2 shrink-0">
           <div className="w-8 h-8 rounded-[10px] bg-gradient-to-br from-accent to-[#f08040]
             flex items-center justify-center shadow-accent">
@@ -46,8 +48,8 @@ export function NavBar() {
           </span>
         </Link>
 
-        {/* ── Nav links desktop ─────────────────────────── */}
-        <nav className="hidden md:flex items-center gap-0.5 ml-4">
+        {/* Nav links desktop */}
+        <nav className="hidden md:flex items-center gap-0.5 ms-4">
           {navLinks.map(({ href, label }) => (
             <Link key={href} href={href}
               className={cn(
@@ -61,47 +63,45 @@ export function NavBar() {
           ))}
         </nav>
 
-        {/* ── Search ────────────────────────────────────── */}
+        {/* Search */}
         <form onSubmit={handleSearch} className="flex-1 max-w-xs mx-auto">
           <div className="relative flex items-center">
-            <Search className="absolute left-3 w-4 h-4 text-ink-faint pointer-events-none" />
+            <Search className="absolute start-3 w-4 h-4 text-ink-faint pointer-events-none" />
             <input
               value={query}
               onChange={e => setQuery(e.target.value)}
-              placeholder="Rechercher des actualités…"
-              className="w-full h-10 pl-9 pr-4 rounded-xl bg-surface border border-[#E8E5E0]
+              placeholder={t('search')}
+              className="w-full h-10 ps-9 pe-4 rounded-xl bg-surface border border-[#E8E5E0]
                 text-ink text-sm placeholder:text-ink-faint outline-none
                 focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all shadow-card"
             />
           </div>
         </form>
 
-        {/* ── Actions ───────────────────────────────────── */}
-        <div className="flex items-center gap-1 ml-auto shrink-0">
-
-          {/* Sélecteur de langue */}
-          <div className="hidden sm:block mr-1">
+        {/* Actions */}
+        <div className="flex items-center gap-1 ms-auto shrink-0">
+          <div className="hidden sm:block me-1">
             <LanguageSwitcher />
           </div>
 
           {isAuthenticated ? (
             <>
-              <Link href="/saved" aria-label="Sauvegardés"
+              <Link href="/saved" aria-label={t('saved')}
                 className="w-9 h-9 flex items-center justify-center rounded-full
                   text-ink-muted hover:bg-[#EDEAE5] transition-colors">
                 <Bookmark className="w-[18px] h-[18px]" />
               </Link>
 
-              <button aria-label="Notifications"
+              <button aria-label={t('alerts')}
                 className="w-9 h-9 flex items-center justify-center rounded-full
                   text-ink-muted hover:bg-[#EDEAE5] transition-colors relative">
                 <Bell className="w-[18px] h-[18px]" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-accent
+                <span className="absolute top-1.5 end-1.5 w-2 h-2 bg-accent
                   rounded-full border-2 border-[#F5F3EF] animate-pulse-dot" />
               </button>
 
-              <Link href="/profile"
-                className="w-9 h-9 ml-1 flex items-center justify-center rounded-full
+              <Link href="/profile" aria-label={t('profile')}
+                className="w-9 h-9 ms-1 flex items-center justify-center rounded-full
                   bg-ink text-white text-sm font-semibold hover:opacity-85 transition-opacity">
                 {user?.name?.[0]?.toUpperCase() ?? <User className="w-4 h-4" />}
               </Link>
@@ -110,12 +110,12 @@ export function NavBar() {
             <Link href="/login"
               className="px-4 py-2 rounded-xl bg-accent text-white text-sm font-medium
                 hover:opacity-90 transition-opacity shadow-accent">
-              Connexion
+              {t('login')}
             </Link>
           )}
 
           <button className="md:hidden w-9 h-9 flex items-center justify-center rounded-full
-            text-ink-muted hover:bg-[#EDEAE5] ml-1" aria-label="Menu">
+            text-ink-muted hover:bg-[#EDEAE5] ms-1" aria-label="Menu">
             <Menu className="w-[18px] h-[18px]" />
           </button>
         </div>
