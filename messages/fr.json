@@ -1,0 +1,131 @@
+{
+  "nav": {
+    "home":       "Accueil",
+    "trends":     "Tendances",
+    "categories": "Catégories",
+    "saved":      "Sauvegardés",
+    "alerts":     "Alertes",
+    "profile":    "Profil",
+    "search":     "Rechercher des actualités…",
+    "login":      "Connexion"
+  },
+  "feed": {
+    "title":      "Actualités",
+    "empty":      "Aucun article trouvé",
+    "emptyHint":  "Essayez une autre catégorie.",
+    "error":      "Connexion impossible",
+    "errorHint":  "Impossible de charger les actualités.",
+    "retry":      "Réessayer",
+    "refresh":    "Actualiser",
+    "readMore":   "min de lecture"
+  },
+  "categories": {
+    "all":          "Tout",
+    "monde":        "Monde",
+    "technologie":  "Tech",
+    "economie":     "Économie",
+    "sport":        "Sport",
+    "science":      "Science",
+    "sante":        "Santé",
+    "politique":    "Politique",
+    "environnement":"Environnement",
+    "societe":      "Société",
+    "culture":      "Culture"
+  },
+  "article": {
+    "readTime":   "min de lecture",
+    "listen":     "Écouter",
+    "pause":      "Pause",
+    "save":       "Sauvegarder",
+    "share":      "Partager",
+    "source":     "Source",
+    "summary":    "Résumé",
+    "readFull":   "Lire l'article complet sur",
+    "back":       "Retour aux actualités",
+    "playing":    "Lecture en cours…",
+    "notFound":   "Article introuvable",
+    "notFoundHint":"Cet article n'est plus disponible."
+  },
+  "auth": {
+    "login":          "Connexion",
+    "register":       "Créer un compte",
+    "email":          "Adresse email",
+    "password":       "Mot de passe",
+    "confirmPassword":"Confirmer le mot de passe",
+    "name":           "Nom complet",
+    "forgot":         "Oublié ?",
+    "loginBtn":       "Se connecter",
+    "registerBtn":    "Créer mon compte",
+    "noAccount":      "Pas encore de compte ?",
+    "hasAccount":     "Déjà un compte ?",
+    "welcome":        "Bon retour 👋",
+    "welcomeHint":    "Connectez-vous à votre compte",
+    "createHint":     "Rejoignez TechnoFind gratuitement"
+  },
+  "search": {
+    "title":      "Recherche",
+    "hint":       "Explorez des milliers d'articles en temps réel",
+    "placeholder":"Rechercher des actualités…",
+    "button":     "Chercher",
+    "results":    "résultats pour",
+    "noResults":  "Aucun résultat",
+    "noResultsHint":"Aucun article trouvé pour",
+    "recent":     "Recherches récentes",
+    "trending":   "Tendances du moment"
+  },
+  "saved": {
+    "title":      "Sauvegardés",
+    "empty":      "Aucun article sauvegardé",
+    "emptyHint":  "Cliquez sur l'icône 🔖 pour sauvegarder un article.",
+    "deleteAll":  "Tout supprimer",
+    "filter":     "Filtrer les articles sauvegardés…"
+  },
+  "alerts": {
+    "title":      "Alertes",
+    "new":        "Nouvelle alerte",
+    "keyword":    "Mot-clé",
+    "frequency":  "Fréquence",
+    "immediate":  "Immédiate",
+    "daily":      "Quotidienne",
+    "weekly":     "Hebdomadaire",
+    "create":     "Créer l'alerte",
+    "cancel":     "Annuler",
+    "empty":      "Aucune alerte",
+    "emptyHint":  "Créez des alertes pour suivre vos sujets."
+  },
+  "profile": {
+    "title":      "Profil",
+    "appearance": "Apparence",
+    "theme":      "Thème",
+    "light":      "Clair",
+    "dark":       "Sombre",
+    "system":     "Système",
+    "layout":     "Disposition du feed",
+    "list":       "Liste",
+    "grid":       "Grille",
+    "magazine":   "Magazine",
+    "notifications":"Notifications",
+    "pushNotif":  "Notifications push",
+    "account":    "Compte",
+    "logout":     "Se déconnecter",
+    "confirm":    "Confirmer la déconnexion ?",
+    "confirmBtn": "Confirmer",
+    "cancel":     "Annuler"
+  },
+  "legal": {
+    "cgu":            "CGU",
+    "privacy":        "Confidentialité",
+    "cookies":        "Cookies",
+    "contact":        "Contact",
+    "rights":         "Tous droits réservés"
+  },
+  "language": {
+    "select":   "Langue",
+    "fr":       "Français",
+    "en":       "English",
+    "ar":       "العربية",
+    "wo":       "Wolof",
+    "es":       "Español",
+    "pt":       "Português"
+  }
+}

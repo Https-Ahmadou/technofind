@@ -1,7 +1,7 @@
 const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
-  register: true,
+  dest:        'public',
+  disable:     process.env.NODE_ENV === 'development',
+  register:    true,
   skipWaiting: true,
 });
 
@@ -9,26 +9,18 @@ const withPWA = require('next-pwa')({
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: '**' },
-    ],
+    remotePatterns: [{ protocol: 'https', hostname: '**' }],
   },
   async headers() {
-    return [
-      {
-        source: '/(.*)',
-        headers: [
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'X-XSS-Protection', value: '1; mode=block' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(self), geolocation=(self)',
-          },
-        ],
-      },
-    ];
+    return [{
+      source: '/(.*)',
+      headers: [
+        { key: 'X-Content-Type-Options', value: 'nosniff'                        },
+        { key: 'X-Frame-Options',         value: 'DENY'                           },
+        { key: 'X-XSS-Protection',        value: '1; mode=block'                  },
+        { key: 'Referrer-Policy',          value: 'strict-origin-when-cross-origin'},
+      ],
+    }];
   },
 };
 

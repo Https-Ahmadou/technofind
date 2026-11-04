@@ -1,0 +1,131 @@
+{
+  "nav": {
+    "home":       "Kër gi",
+    "trends":     "Ci kanam",
+    "categories": "Yoon yi",
+    "saved":      "Moom ak",
+    "alerts":     "Jëfandikoo",
+    "profile":    "Sama xët",
+    "search":     "Seet xibaar…",
+    "login":      "Dugg"
+  },
+  "feed": {
+    "title":      "Xibaar yi",
+    "empty":      "Amul xibaar",
+    "emptyHint":  "Jëfandikoo yoon wéér.",
+    "error":      "Jëm du dox",
+    "errorHint":  "Mën ul yégle xibaar yi.",
+    "retry":      "Saytu",
+    "refresh":    "Rafraîchir",
+    "readMore":   "simili jàng"
+  },
+  "categories": {
+    "all":          "Yépp",
+    "monde":        "Àddina",
+    "technologie":  "Teknoloji",
+    "economie":     "Ekonomi",
+    "sport":        "Jaaykat",
+    "science":      "Xam-xam",
+    "sante":        "Wër-gi",
+    "politique":    "Politig",
+    "environnement":"Suuf ak réew",
+    "societe":      "Liggéey",
+    "culture":      "Cosaan"
+  },
+  "article": {
+    "readTime":   "simili jàng",
+    "listen":     "Dégg",
+    "pause":      "Tëdd",
+    "save":       "Moom",
+    "share":      "Feral",
+    "source":     "Jukël",
+    "summary":    "Melo-melo",
+    "readFull":   "Jàng yépp ci",
+    "back":       "Dellu xibaar yi",
+    "playing":    "Dafa dégg…",
+    "notFound":   "Xibaar bi amul",
+    "notFoundHint":"Xibaar bii dafa jeex."
+  },
+  "auth": {
+    "login":          "Dugg",
+    "register":       "Defar kont",
+    "email":          "Email",
+    "password":       "Mot de passe",
+    "confirmPassword":"Sett mot de passe",
+    "name":           "Tur bi ak sant bi",
+    "forgot":         "Fàtte?",
+    "loginBtn":       "Dugg",
+    "registerBtn":    "Defar sama kont",
+    "noAccount":      "Amul sa kont?",
+    "hasAccount":     "Am nga kont?",
+    "welcome":        "Dalal ak jàmm 👋",
+    "welcomeHint":    "Dugg ci sa kont",
+    "createHint":     "Jënd TechnoFind yomb"
+  },
+  "search": {
+    "title":        "Seet",
+    "hint":         "Seet xibaar yi ci yoon wi",
+    "placeholder":  "Seet xibaar…",
+    "button":       "Seet",
+    "results":      "result ngir",
+    "noResults":    "Amul dara",
+    "noResultsHint":"Amul xibaar ngir",
+    "recent":       "Seet bi ci ginaaw",
+    "trending":     "Ci kanam leegi"
+  },
+  "saved": {
+    "title":     "Moom ak",
+    "empty":     "Amul xibaar moom ak",
+    "emptyHint": "Toppal 🔖 ngir moom xibaar.",
+    "deleteAll": "Fey yépp",
+    "filter":    "Seet ci moom ak…"
+  },
+  "alerts": {
+    "title":     "Jëfandikoo",
+    "new":       "Jëfandikoo bu bees",
+    "keyword":   "Mot-clé",
+    "frequency": "Yoon",
+    "immediate": "Léegi léegi",
+    "daily":     "Fan fan",
+    "weekly":    "Ayu-bis ayu-bis",
+    "create":    "Defar jëfandikoo",
+    "cancel":    "Taxaw",
+    "empty":     "Amul jëfandikoo",
+    "emptyHint": "Defar jëfandikoo ngir suivi."
+  },
+  "profile": {
+    "title":         "Sama xët",
+    "appearance":    "Jël yi",
+    "theme":         "Thème",
+    "light":         "Teere",
+    "dark":          "Gudde",
+    "system":        "Système",
+    "layout":        "Jël feed bi",
+    "list":          "Liste",
+    "grid":          "Grille",
+    "magazine":      "Magazine",
+    "notifications": "Jëfandikoo",
+    "pushNotif":     "Push notifications",
+    "account":       "Kont",
+    "logout":        "Dem",
+    "confirm":       "Dem jaaxle?",
+    "confirmBtn":    "Waaw",
+    "cancel":        "Déedéet"
+  },
+  "legal": {
+    "cgu":     "Règ yi",
+    "privacy": "Sirr",
+    "cookies": "Cookies",
+    "contact": "Jënd",
+    "rights":  "Yépp moom ak"
+  },
+  "language": {
+    "select": "Làkk",
+    "fr":     "Français",
+    "en":     "English",
+    "ar":     "العربية",
+    "wo":     "Wolof",
+    "es":     "Español",
+    "pt":     "Português"
+  }
+}

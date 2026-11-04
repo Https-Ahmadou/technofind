@@ -6,6 +6,7 @@ import { Search, Bell, Bookmark, User, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/auth.store';
 import { useState } from 'react';
+import { LanguageSwitcher } from '@/components/shared/LanguageSwitcher';
 
 const navLinks = [
   { href: '/feed',       label: 'Accueil'    },
@@ -77,6 +78,12 @@ export function NavBar() {
 
         {/* ── Actions ───────────────────────────────────── */}
         <div className="flex items-center gap-1 ml-auto shrink-0">
+
+          {/* Sélecteur de langue */}
+          <div className="hidden sm:block mr-1">
+            <LanguageSwitcher />
+          </div>
+
           {isAuthenticated ? (
             <>
               <Link href="/saved" aria-label="Sauvegardés"

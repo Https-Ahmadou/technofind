@@ -1,0 +1,131 @@
+{
+  "nav": {
+    "home":       "الرئيسية",
+    "trends":     "الاتجاهات",
+    "categories": "الفئات",
+    "saved":      "المحفوظات",
+    "alerts":     "التنبيهات",
+    "profile":    "الملف الشخصي",
+    "search":     "ابحث عن الأخبار…",
+    "login":      "تسجيل الدخول"
+  },
+  "feed": {
+    "title":      "الأخبار",
+    "empty":      "لا توجد مقالات",
+    "emptyHint":  "جرب فئة أخرى.",
+    "error":      "فشل الاتصال",
+    "errorHint":  "تعذر تحميل المقالات.",
+    "retry":      "إعادة المحاولة",
+    "refresh":    "تحديث",
+    "readMore":   "دقيقة قراءة"
+  },
+  "categories": {
+    "all":          "الكل",
+    "monde":        "العالم",
+    "technologie":  "تقنية",
+    "economie":     "اقتصاد",
+    "sport":        "رياضة",
+    "science":      "علوم",
+    "sante":        "صحة",
+    "politique":    "سياسة",
+    "environnement":"بيئة",
+    "societe":      "مجتمع",
+    "culture":      "ثقافة"
+  },
+  "article": {
+    "readTime":   "دقيقة قراءة",
+    "listen":     "استمع",
+    "pause":      "إيقاف مؤقت",
+    "save":       "حفظ",
+    "share":      "مشاركة",
+    "source":     "المصدر",
+    "summary":    "ملخص",
+    "readFull":   "اقرأ المقال الكامل على",
+    "back":       "العودة إلى الأخبار",
+    "playing":    "جارٍ التشغيل…",
+    "notFound":   "المقال غير موجود",
+    "notFoundHint":"هذا المقال لم يعد متاحاً."
+  },
+  "auth": {
+    "login":          "تسجيل الدخول",
+    "register":       "إنشاء حساب",
+    "email":          "البريد الإلكتروني",
+    "password":       "كلمة المرور",
+    "confirmPassword":"تأكيد كلمة المرور",
+    "name":           "الاسم الكامل",
+    "forgot":         "نسيت؟",
+    "loginBtn":       "تسجيل الدخول",
+    "registerBtn":    "إنشاء حساب",
+    "noAccount":      "ليس لديك حساب؟",
+    "hasAccount":     "لديك حساب بالفعل؟",
+    "welcome":        "مرحباً بعودتك 👋",
+    "welcomeHint":    "سجّل الدخول إلى حسابك",
+    "createHint":     "انضم إلى TechnoFind مجاناً"
+  },
+  "search": {
+    "title":        "بحث",
+    "hint":         "استكشف آلاف المقالات في الوقت الفعلي",
+    "placeholder":  "ابحث عن الأخبار…",
+    "button":       "بحث",
+    "results":      "نتيجة لـ",
+    "noResults":    "لا توجد نتائج",
+    "noResultsHint":"لم يتم العثور على مقالات لـ",
+    "recent":       "عمليات البحث الأخيرة",
+    "trending":     "الأكثر تداولاً"
+  },
+  "saved": {
+    "title":     "المحفوظات",
+    "empty":     "لا توجد مقالات محفوظة",
+    "emptyHint": "انقر على أيقونة 🔖 لحفظ مقال.",
+    "deleteAll": "حذف الكل",
+    "filter":    "تصفية المقالات المحفوظة…"
+  },
+  "alerts": {
+    "title":     "التنبيهات",
+    "new":       "تنبيه جديد",
+    "keyword":   "كلمة مفتاحية",
+    "frequency": "التكرار",
+    "immediate": "فوري",
+    "daily":     "يومي",
+    "weekly":    "أسبوعي",
+    "create":    "إنشاء تنبيه",
+    "cancel":    "إلغاء",
+    "empty":     "لا توجد تنبيهات",
+    "emptyHint": "أنشئ تنبيهات لمتابعة مواضيعك."
+  },
+  "profile": {
+    "title":         "الملف الشخصي",
+    "appearance":    "المظهر",
+    "theme":         "السمة",
+    "light":         "فاتح",
+    "dark":          "داكن",
+    "system":        "النظام",
+    "layout":        "تخطيط الموجز",
+    "list":          "قائمة",
+    "grid":          "شبكة",
+    "magazine":      "مجلة",
+    "notifications": "الإشعارات",
+    "pushNotif":     "إشعارات الدفع",
+    "account":       "الحساب",
+    "logout":        "تسجيل الخروج",
+    "confirm":       "تأكيد تسجيل الخروج؟",
+    "confirmBtn":    "تأكيد",
+    "cancel":        "إلغاء"
+  },
+  "legal": {
+    "cgu":     "الشروط",
+    "privacy": "الخصوصية",
+    "cookies": "الكوكيز",
+    "contact": "اتصل بنا",
+    "rights":  "جميع الحقوق محفوظة"
+  },
+  "language": {
+    "select": "اللغة",
+    "fr":     "Français",
+    "en":     "English",
+    "ar":     "العربية",
+    "wo":     "Wolof",
+    "es":     "Español",
+    "pt":     "Português"
+  }
+}
