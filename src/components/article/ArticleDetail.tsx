@@ -4,8 +4,9 @@ import { useState, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslations, useLocale } from 'next-intl';
 import {
-  ArrowLeft, Bookmark,  ExternalLink,
+  ArrowLeft, Bookmark, ExternalLink,
   Pause, Volume2, Clock, Calendar,
   Globe, ChevronRight
 } from 'lucide-react';
@@ -29,9 +30,24 @@ const CAT_STYLES: Record<string, { bg: string; text: string }> = {
   societe:       { bg: '#F5F3FF', text: '#6D28D9' },
 };
 
+// Langue de la synthèse vocale selon la langue de l'interface
+const TTS_LANG: Record<string, string> = {
+  fr: 'fr-FR',
+  en: 'en-US',
+  ar: 'ar-SA',
+  es: 'es-ES',
+  pt: 'pt-BR',
+  wo: 'fr-FR', // pas de voix wolof dans les navigateurs, repli sur le français
+};
+
 interface Props { articleUrl: string }
 
 export function ArticleDetail({ articleUrl }: Props) {
+  const t  = useTranslations('article');
+  const tc = useTranslations('categories');
+  const tn = useTranslations('nav');
+  const locale = useLocale();
+
   const { savedIds, toggleSaved, selectedArticle } = useFeedStore();
   const [isPlaying, setIsPlaying] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
@@ -58,7 +74,7 @@ export function ArticleDetail({ articleUrl }: Props) {
     }
     const text  = `${article.title}. ${article.summary || article.content}`;
     const utt   = new SpeechSynthesisUtterance(text);
-    utt.lang    = 'fr-FR';
+    utt.lang    = TTS_LANG[locale] ?? 'fr-FR';
     utt.rate    = 0.95;
     utt.onend   = () => setIsPlaying(false);
     utt.onerror = () => setIsPlaying(false);
@@ -70,17 +86,19 @@ export function ArticleDetail({ articleUrl }: Props) {
   if (isLoading && !selectedArticle) return <ArticleSkeleton />;
   if ((isError && !selectedArticle) || !article) return <ArticleError />;
 
+  const categoryLabel = article.category in CAT_STYLES ? tc(article.category) : article.category;
+
   return (
     <article className="max-w-2xl mx-auto flex flex-col gap-3 animate-fade-up">
 
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-[11px] text-ink-faint">
         <Link href="/feed" className="flex items-center gap-1 hover:text-accent transition-colors">
-          <ArrowLeft className="w-3 h-3" /> Accueil
+          <ArrowLeft className="w-3 h-3 rtl:rotate-180" /> {tn('home')}
         </Link>
-        <ChevronRight className="w-3 h-3" />
-        <span className="text-ink-muted capitalize">{article.category}</span>
-        <ChevronRight className="w-3 h-3" />
+        <ChevronRight className="w-3 h-3 rtl:rotate-180" />
+        <span className="text-ink-muted">{categoryLabel}</span>
+        <ChevronRight className="w-3 h-3 rtl:rotate-180" />
         <span className="truncate max-w-[200px]">{article.source.name}</span>
       </div>
 
@@ -91,17 +109,17 @@ export function ArticleDetail({ articleUrl }: Props) {
             <Image src={image.url} alt={image.alt || article.title}
               fill className="object-cover" priority />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-            <div className="absolute bottom-4 left-4">
+            <div className="absolute bottom-4 start-4">
               <span className="badge text-[11px] font-semibold shadow-sm"
-                style={{ background: cat.bg, color: cat.text }}>{article.category}</span>
+                style={{ background: cat.bg, color: cat.text }}>{categoryLabel}</span>
             </div>
           </div>
         ) : (
           <div className="dark-hero h-48 relative overflow-hidden">
             <div className="hero-orb-1" /><div className="hero-orb-2" /><div className="hero-grid" />
-            <div className="absolute bottom-4 left-4">
+            <div className="absolute bottom-4 start-4">
               <span className="badge text-[11px] font-semibold"
-                style={{ background: cat.bg, color: cat.text }}>{article.category}</span>
+                style={{ background: cat.bg, color: cat.text }}>{categoryLabel}</span>
             </div>
           </div>
         )}
@@ -117,7 +135,7 @@ export function ArticleDetail({ articleUrl }: Props) {
               <Calendar className="w-3.5 h-3.5" />{formatDate(article.publishedAt)}
             </span>
             <span className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5" />{readTime} min de lecture
+              <Clock className="w-3.5 h-3.5" />{readTime} {t('readTime')}
             </span>
             <span className="flex items-center gap-1">
               <Globe className="w-3.5 h-3.5" />{article.source.name}
@@ -125,7 +143,6 @@ export function ArticleDetail({ articleUrl }: Props) {
           </div>
 
           <div className="flex items-center gap-2 pt-2 border-t border-[#E8E5E0]">
-            {/* Lecteur vocal */}
             <button onClick={toggleTTS}
               className={cn(
                 'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all',
@@ -134,13 +151,13 @@ export function ArticleDetail({ articleUrl }: Props) {
                   : 'bg-[#FBF0EB] text-accent hover:bg-accent hover:text-white'
               )}>
               {isPlaying
-                ? <><Pause className="w-4 h-4" /> Pause</>
-                : <><Volume2 className="w-4 h-4" /> Écouter</>}
+                ? <><Pause className="w-4 h-4" /> {t('pause')}</>
+                : <><Volume2 className="w-4 h-4" /> {t('listen')}</>}
             </button>
 
-            <div className="flex items-center gap-1 ml-auto">
-              {/* Sauvegarder */}
+            <div className="flex items-center gap-1 ms-auto">
               <button onClick={() => toggleSaved(article.id, article)}
+                aria-label={t('save')}
                 className={cn(
                   'w-9 h-9 flex items-center justify-center rounded-xl transition-colors',
                   isSaved ? 'bg-accent/10 text-accent' : 'text-ink-faint hover:bg-[#FBF0EB] hover:text-accent'
@@ -148,20 +165,17 @@ export function ArticleDetail({ articleUrl }: Props) {
                 <Bookmark className={cn('w-4 h-4', isSaved && 'fill-current')} />
               </button>
 
-              {/* Partager */}
-             <ShareButton article={article} size="md" />
-<ReportButton article={article} size="md" />
+              <ShareButton article={article} size="md" />
+              <ReportButton article={article} size="md" />
 
-              {/* Source */}
               <a href={article.url} target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium
-                  bg-ink text-white hover:opacity-85 transition-opacity ml-1">
-                <ExternalLink className="w-3.5 h-3.5" /> Source
+                  bg-ink text-white hover:opacity-85 transition-opacity ms-1">
+                <ExternalLink className="w-3.5 h-3.5" /> {t('source')}
               </a>
             </div>
           </div>
 
-          {/* Visualisation audio */}
           {isPlaying && (
             <div className="flex items-center gap-3 px-4 py-3 rounded-xl
               bg-[#FBF0EB] border border-accent/20 animate-fade-up">
@@ -172,7 +186,7 @@ export function ArticleDetail({ articleUrl }: Props) {
                     style={{ height: `${(i % 3 + 1) * 5 + 4}px`, animationDelay: `${i * 0.1}s` }} />
                 ))}
               </div>
-              <span className="text-[12px] text-accent font-medium">Lecture en cours…</span>
+              <span className="text-[12px] text-accent font-medium">{t('playing')}</span>
             </div>
           )}
         </div>
@@ -181,7 +195,7 @@ export function ArticleDetail({ articleUrl }: Props) {
       {/* Contenu */}
       {(article.summary || article.content) && (
         <div className="card p-6">
-          <h2 className="font-display font-bold text-lg text-ink mb-4">Résumé</h2>
+          <h2 className="font-display font-bold text-lg text-ink mb-4">{t('summary')}</h2>
           <p className="text-sm text-ink-muted leading-relaxed">
             {article.summary || article.content}
           </p>
@@ -189,15 +203,15 @@ export function ArticleDetail({ articleUrl }: Props) {
             className="flex items-center justify-center gap-2 mt-6 py-3 rounded-xl
               border-2 border-dashed border-[#E8E5E0] text-sm text-ink-muted
               hover:border-accent hover:text-accent transition-colors group">
-            Lire l'article complet sur {article.source.name}
-            <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            {t('readFull')} {article.source.name}
+            <ExternalLink className="w-3.5 h-3.5" />
           </a>
         </div>
       )}
 
       <Link href="/feed"
         className="flex items-center gap-2 text-sm text-ink-muted hover:text-accent transition-colors mt-2">
-        <ArrowLeft className="w-4 h-4" /> Retour aux actualités
+        <ArrowLeft className="w-4 h-4 rtl:rotate-180" /> {t('back')}
       </Link>
     </article>
   );
@@ -219,18 +233,19 @@ function ArticleSkeleton() {
 }
 
 function ArticleError() {
+  const t = useTranslations('article');
   return (
     <div className="max-w-2xl mx-auto">
       <div className="card flex flex-col items-center gap-4 py-14 text-center">
         <span className="text-4xl">📰</span>
         <div>
-          <p className="font-display font-bold text-ink mb-1">Article introuvable</p>
-          <p className="text-sm text-ink-muted">Cet article n'est plus disponible.</p>
+          <p className="font-display font-bold text-ink mb-1">{t('notFound')}</p>
+          <p className="text-sm text-ink-muted">{t('notFoundHint')}</p>
         </div>
         <Link href="/feed"
           className="px-5 py-2 rounded-xl bg-accent text-white text-sm font-medium
             hover:opacity-90 shadow-accent">
-          Retour au feed
+          {t('back')}
         </Link>
       </div>
     </div>
