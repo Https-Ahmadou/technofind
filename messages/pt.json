@@ -1,0 +1,131 @@
+{
+  "nav": {
+    "home":       "Home",
+    "trends":     "Trends",
+    "categories": "Categories",
+    "saved":      "Saved",
+    "alerts":     "Alerts",
+    "profile":    "Profile",
+    "search":     "Search news…",
+    "login":      "Login"
+  },
+  "feed": {
+    "title":      "News",
+    "empty":      "No articles found",
+    "emptyHint":  "Try another category.",
+    "error":      "Connection failed",
+    "errorHint":  "Unable to load articles.",
+    "retry":      "Retry",
+    "refresh":    "Refresh",
+    "readMore":   "min read"
+  },
+  "categories": {
+    "all":          "All",
+    "monde":        "World",
+    "technologie":  "Tech",
+    "economie":     "Economy",
+    "sport":        "Sport",
+    "science":      "Science",
+    "sante":        "Health",
+    "politique":    "Politics",
+    "environnement":"Environment",
+    "societe":      "Society",
+    "culture":      "Culture"
+  },
+  "article": {
+    "readTime":   "min read",
+    "listen":     "Listen",
+    "pause":      "Pause",
+    "save":       "Save",
+    "share":      "Share",
+    "source":     "Source",
+    "summary":    "Summary",
+    "readFull":   "Read full article on",
+    "back":       "Back to news",
+    "playing":    "Playing…",
+    "notFound":   "Article not found",
+    "notFoundHint":"This article is no longer available."
+  },
+  "auth": {
+    "login":          "Login",
+    "register":       "Create account",
+    "email":          "Email address",
+    "password":       "Password",
+    "confirmPassword":"Confirm password",
+    "name":           "Full name",
+    "forgot":         "Forgot?",
+    "loginBtn":       "Sign in",
+    "registerBtn":    "Create account",
+    "noAccount":      "Don't have an account?",
+    "hasAccount":     "Already have an account?",
+    "welcome":        "Welcome back 👋",
+    "welcomeHint":    "Sign in to your account",
+    "createHint":     "Join TechnoFind for free"
+  },
+  "search": {
+    "title":      "Search",
+    "hint":       "Explore thousands of articles in real time",
+    "placeholder":"Search news…",
+    "button":     "Search",
+    "results":    "results for",
+    "noResults":  "No results",
+    "noResultsHint":"No articles found for",
+    "recent":     "Recent searches",
+    "trending":   "Trending now"
+  },
+  "saved": {
+    "title":      "Saved",
+    "empty":      "No saved articles",
+    "emptyHint":  "Click the 🔖 icon to save an article.",
+    "deleteAll":  "Delete all",
+    "filter":     "Filter saved articles…"
+  },
+  "alerts": {
+    "title":      "Alerts",
+    "new":        "New alert",
+    "keyword":    "Keyword",
+    "frequency":  "Frequency",
+    "immediate":  "Immediate",
+    "daily":      "Daily",
+    "weekly":     "Weekly",
+    "create":     "Create alert",
+    "cancel":     "Cancel",
+    "empty":      "No alerts",
+    "emptyHint":  "Create alerts to follow your topics."
+  },
+  "profile": {
+    "title":      "Profile",
+    "appearance": "Appearance",
+    "theme":      "Theme",
+    "light":      "Light",
+    "dark":       "Dark",
+    "system":     "System",
+    "layout":     "Feed layout",
+    "list":       "List",
+    "grid":       "Grid",
+    "magazine":   "Magazine",
+    "notifications":"Notifications",
+    "pushNotif":  "Push notifications",
+    "account":    "Account",
+    "logout":     "Sign out",
+    "confirm":    "Confirm sign out?",
+    "confirmBtn": "Confirm",
+    "cancel":     "Cancel"
+  },
+  "legal": {
+    "cgu":            "Terms",
+    "privacy":        "Privacy",
+    "cookies":        "Cookies",
+    "contact":        "Contact",
+    "rights":         "All rights reserved"
+  },
+  "language": {
+    "select":   "Language",
+    "fr":       "Français",
+    "en":       "English",
+    "ar":       "العربية",
+    "wo":       "Wolof",
+    "es":       "Español",
+    "pt":       "Português"
+  }
+}
