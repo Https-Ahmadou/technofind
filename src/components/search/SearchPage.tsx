@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Search, X, SlidersHorizontal, Clock, TrendingUp } from 'lucide-react';
 import { apiClient } from '@/lib/api/client';
 import { PaginatedResponse, Article, ArticleCategory } from '@/types';
@@ -10,29 +11,13 @@ import { ArticleCard } from '@/components/feed/ArticleCard';
 import { FeedSkeleton } from '@/components/feed/ArticleSkeleton';
 import { cn } from '@/lib/utils';
 
-const CATEGORIES: { value: ArticleCategory | ''; label: string }[] = [
-  { value: '',             label: 'Toutes'       },
-  { value: 'monde',       label: 'Monde'         },
-  { value: 'technologie', label: 'Technologie'   },
-  { value: 'economie',    label: 'Économie'      },
-  { value: 'sport',       label: 'Sport'         },
-  { value: 'science',     label: 'Science'       },
-  { value: 'sante',       label: 'Santé'         },
-  { value: 'politique',   label: 'Politique'     },
-];
-
-const SORT_OPTIONS = [
-  { value: 'publishedAt', label: 'Plus récents' },
-  { value: 'relevancy',   label: 'Pertinence'   },
-  { value: 'popularity',  label: 'Popularité'   },
-];
-
-const SUGGESTIONS = [
-  'Intelligence artificielle', 'Climat', 'Économie mondiale',
-  'Technologie', 'Sport', 'Santé', 'Politique',
+const CATEGORY_VALUES: (ArticleCategory | '')[] = [
+  '', 'monde', 'technologie', 'economie', 'sport', 'science', 'sante', 'politique',
 ];
 
 export function SearchPage() {
+  const t  = useTranslations('search');
+  const tc = useTranslations('categories');
   const searchParams = useSearchParams();
   const qParam       = searchParams.get('q') || '';
 
@@ -42,6 +27,14 @@ export function SearchPage() {
   const [sortBy,      setSortBy]      = useState('publishedAt');
   const [showFilters, setShowFilters] = useState(false);
   const [history,     setHistory]     = useState<string[]>([]);
+
+  const SORT_OPTIONS = [
+    { value: 'publishedAt', label: t('sortRecent')     },
+    { value: 'relevancy',   label: t('sortRelevancy')  },
+    { value: 'popularity',  label: t('sortPopularity') },
+  ];
+
+  const suggestions = t.raw('suggestions') as string[];
 
   useEffect(() => {
     if (qParam) {
@@ -81,30 +74,30 @@ export function SearchPage() {
   return (
     <div className="flex flex-col gap-5">
 
-      {/* ── Header ─────────────────────────────────────── */}
+      {/* Header */}
       <div>
-        <h1 className="font-display font-black text-2xl text-ink mb-1">Recherche</h1>
-        <p className="text-sm text-ink-muted">Explorez des milliers d'articles en temps réel</p>
+        <h1 className="font-display font-black text-2xl text-ink mb-1">{t('title')}</h1>
+        <p className="text-sm text-ink-muted">{t('hint')}</p>
       </div>
 
-      {/* ── Barre de recherche ──────────────────────────── */}
+      {/* Barre de recherche */}
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4
+          <Search className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4
             text-ink-faint pointer-events-none" />
           <input
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-            placeholder="Rechercher des actualités…"
+            placeholder={t('placeholder')}
             autoFocus
-            className="w-full h-12 pl-10 pr-10 rounded-xl border border-[#E8E5E0] bg-surface
+            className="w-full h-12 ps-10 pe-10 rounded-xl border border-[#E8E5E0] bg-surface
               text-ink text-sm placeholder:text-ink-faint outline-none
               focus:border-accent focus:ring-2 focus:ring-accent/10 transition-all"
           />
           {query && (
             <button onClick={handleClear}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2
+              className="absolute end-3.5 top-1/2 -translate-y-1/2
                 text-ink-faint hover:text-ink transition-colors">
               <X className="w-4 h-4" />
             </button>
@@ -114,7 +107,7 @@ export function SearchPage() {
         <button onClick={() => handleSubmit()}
           className="px-5 h-12 rounded-xl bg-accent text-white text-sm font-medium
             hover:opacity-90 transition-opacity shadow-accent shrink-0">
-          Chercher
+          {t('button')}
         </button>
 
         <button onClick={() => setShowFilters(s => !s)}
@@ -128,15 +121,15 @@ export function SearchPage() {
         </button>
       </div>
 
-      {/* ── Filtres ─────────────────────────────────────── */}
+      {/* Filtres */}
       {showFilters && (
         <div className="card p-4 flex flex-col gap-4 animate-fade-up">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-faint mb-2">
-              Catégorie
+              {t('category')}
             </p>
             <div className="flex flex-wrap gap-1.5">
-              {CATEGORIES.map(({ value, label }) => (
+              {CATEGORY_VALUES.map((value) => (
                 <button key={value} onClick={() => setCategory(value)}
                   className={cn(
                     'px-3 py-1.5 rounded-full text-xs font-medium transition-all',
@@ -144,7 +137,7 @@ export function SearchPage() {
                       ? 'bg-ink text-white'
                       : 'bg-[#EDEAE5] text-ink-muted hover:bg-[#E8E5E0] hover:text-ink'
                   )}>
-                  {label}
+                  {tc(value === '' ? 'all' : value)}
                 </button>
               ))}
             </div>
@@ -152,9 +145,9 @@ export function SearchPage() {
 
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-faint mb-2">
-              Trier par
+              {t('sortBy')}
             </p>
-            <div className="flex gap-1.5">
+            <div className="flex gap-1.5 flex-wrap">
               {SORT_OPTIONS.map(({ value, label }) => (
                 <button key={value} onClick={() => setSortBy(value)}
                   className={cn(
@@ -171,14 +164,14 @@ export function SearchPage() {
         </div>
       )}
 
-      {/* ── État initial — suggestions ───────────────────── */}
+      {/* État initial */}
       {!submitted && (
         <div className="flex flex-col gap-5">
           {history.length > 0 && (
             <div>
               <p className="flex items-center gap-2 text-[11px] font-semibold
                 uppercase tracking-widest text-ink-faint mb-3">
-                <Clock className="w-3 h-3" /> Recherches récentes
+                <Clock className="w-3 h-3" /> {t('recent')}
               </p>
               <div className="flex flex-wrap gap-2">
                 {history.map(h => (
@@ -196,10 +189,10 @@ export function SearchPage() {
           <div>
             <p className="flex items-center gap-2 text-[11px] font-semibold
               uppercase tracking-widest text-ink-faint mb-3">
-              <TrendingUp className="w-3 h-3" /> Tendances du moment
+              <TrendingUp className="w-3 h-3" /> {t('trending')}
             </p>
             <div className="flex flex-wrap gap-2">
-              {SUGGESTIONS.map(s => (
+              {suggestions.map(s => (
                 <button key={s} onClick={() => handleSuggestion(s)}
                   className="px-3 py-1.5 rounded-full text-xs font-medium
                     bg-[#FBF0EB] text-accent hover:bg-accent hover:text-white transition-colors">
@@ -211,22 +204,20 @@ export function SearchPage() {
         </div>
       )}
 
-      {/* ── Résultats ────────────────────────────────────── */}
+      {/* Résultats */}
       {submitted && (
         <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-ink-muted">
-              {isLoading ? 'Recherche en cours…' : (
-                <>
-                  <span className="font-semibold text-ink">
-                    {data?.total ?? articles.length}
-                  </span>
-                  {' '}résultats pour{' '}
-                  <span className="font-semibold text-accent">"{submitted}"</span>
-                </>
-              )}
-            </p>
-          </div>
+          <p className="text-sm text-ink-muted">
+            {isLoading ? t('searching') : (
+              <>
+                <span className="font-semibold text-ink">
+                  {data?.total ?? articles.length}
+                </span>
+                {' '}{t('results')}{' '}
+                <span className="font-semibold text-accent">"{submitted}"</span>
+              </>
+            )}
+          </p>
 
           {isLoading ? (
             <FeedSkeleton count={5} />
@@ -248,13 +239,14 @@ export function SearchPage() {
 }
 
 function EmptyState({ query }: { query: string }) {
+  const t = useTranslations('search');
   return (
     <div className="card flex flex-col items-center gap-3 py-14 text-center">
       <span className="text-4xl">🔍</span>
       <div>
-        <p className="font-display font-bold text-ink mb-1">Aucun résultat</p>
+        <p className="font-display font-bold text-ink mb-1">{t('noResults')}</p>
         <p className="text-sm text-ink-muted">
-          Aucun article trouvé pour{' '}
+          {t('noResultsHint')}{' '}
           <span className="text-accent font-medium">"{query}"</span>
         </p>
       </div>
@@ -263,11 +255,12 @@ function EmptyState({ query }: { query: string }) {
 }
 
 function ErrorState() {
+  const t = useTranslations('search');
   return (
     <div className="card flex flex-col items-center gap-3 py-14 text-center">
       <span className="text-4xl">📡</span>
-      <p className="font-display font-bold text-ink">Erreur de recherche</p>
-      <p className="text-sm text-ink-muted">Veuillez réessayer.</p>
+      <p className="font-display font-bold text-ink">{t('error')}</p>
+      <p className="text-sm text-ink-muted">{t('errorHint')}</p>
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Mail, Lock, ArrowRight } from 'lucide-react';
@@ -13,6 +14,7 @@ import { User, AuthTokens } from '@/types';
 import { cn } from '@/lib/utils';
 
 export function LoginForm() {
+  const t = useTranslations('auth');
   const [showPassword, setShowPassword] = useState(false);
   const [serverError,  setServerError]  = useState('');
   const { setUser } = useAuthStore();
@@ -30,26 +32,25 @@ export function LoginForm() {
       const res = await apiClient.post<{ user: User; tokens: AuthTokens }>(
         '/auth/login', data
       );
-     try { localStorage.setItem('access_token', res.tokens.accessToken); } catch {}
+      try { localStorage.setItem('access_token', res.tokens.accessToken); } catch {}
       setUser(res.user, res.tokens.accessToken);
       router.push('/feed');
     } catch (err: unknown) {
       const e = err as { message?: string };
-      setServerError(e?.message || 'Une erreur est survenue.');
+      setServerError(e?.message || t('errorGeneric'));
     }
   }
 
   return (
     <div className="w-full max-w-sm mx-auto flex flex-col min-h-screen">
 
-      {/* ── Dark Hero ─────────────────────────────────────── */}
+      {/* Hero */}
       <div className="dark-hero flex-shrink-0 h-64 flex flex-col items-center justify-center gap-4 px-8">
         <div className="hero-orb-1" />
         <div className="hero-orb-2" />
         <div className="hero-grid" />
         <div className="hero-overlay" />
 
-        {/* Logo */}
         <div className="relative z-10 flex flex-col items-center gap-3">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent to-[#f08040]
             flex items-center justify-center shadow-accent animate-pop">
@@ -62,21 +63,18 @@ export function LoginForm() {
             <h1 className="font-display font-black text-3xl text-white tracking-tight">
               Techno<span className="text-accent">Find</span>
             </h1>
-            <p className="text-[13px] text-white/50 font-light mt-1">
-              L'actualité, à votre rythme
-            </p>
+            <p className="text-[13px] text-white/50 font-light mt-1">{t('tagline')}</p>
           </div>
         </div>
       </div>
 
-      {/* ── Formulaire ────────────────────────────────────── */}
+      {/* Formulaire */}
       <div className="flex-1 bg-bg px-6 py-8 flex flex-col gap-6">
         <div>
-          <h2 className="font-display font-bold text-2xl text-ink">Bon retour 👋</h2>
-          <p className="text-sm text-ink-muted mt-1">Connectez-vous à votre compte</p>
+          <h2 className="font-display font-bold text-2xl text-ink">{t('welcome')}</h2>
+          <p className="text-sm text-ink-muted mt-1">{t('welcomeHint')}</p>
         </div>
 
-        {/* Erreur serveur */}
         {serverError && (
           <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl
             bg-[#FEF2F2] border border-[#FECACA] text-[#DC2626] text-sm">
@@ -90,17 +88,17 @@ export function LoginForm() {
           {/* Email */}
           <div className="flex flex-col gap-1.5">
             <label className="text-[11px] font-semibold uppercase tracking-widest text-ink-muted">
-              Adresse email
+              {t('email')}
             </label>
             <div className="relative flex items-center">
-              <Mail className="absolute left-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
+              <Mail className="absolute start-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
               <input
                 {...register('email')}
                 type="email"
                 placeholder="vous@exemple.com"
                 autoComplete="email"
                 className={cn(
-                  'w-full h-12 pl-10 pr-4 rounded-xl border bg-surface text-ink text-sm',
+                  'w-full h-12 ps-10 pe-4 rounded-xl border bg-surface text-ink text-sm',
                   'placeholder:text-ink-faint outline-none transition-colors',
                   'focus:border-accent focus:bg-white',
                   errors.email ? 'border-[#EF4444]' : 'border-[#E8E5E0]'
@@ -116,29 +114,29 @@ export function LoginForm() {
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
               <label className="text-[11px] font-semibold uppercase tracking-widest text-ink-muted">
-                Mot de passe
+                {t('password')}
               </label>
               <Link href="/forgot-password"
                 className="text-[11px] text-accent hover:underline">
-                Oublié ?
+                {t('forgot')}
               </Link>
             </div>
             <div className="relative flex items-center">
-              <Lock className="absolute left-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
+              <Lock className="absolute start-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
               <input
                 {...register('password')}
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 autoComplete="current-password"
                 className={cn(
-                  'w-full h-12 pl-10 pr-10 rounded-xl border bg-surface text-ink text-sm',
+                  'w-full h-12 ps-10 pe-10 rounded-xl border bg-surface text-ink text-sm',
                   'placeholder:text-ink-faint outline-none transition-colors',
                   'focus:border-accent focus:bg-white',
                   errors.password ? 'border-[#EF4444]' : 'border-[#E8E5E0]'
                 )}
               />
               <button type="button" onClick={() => setShowPassword(s => !s)}
-                className="absolute right-3.5 text-ink-faint hover:text-ink-muted transition-colors">
+                className="absolute end-3.5 text-ink-faint hover:text-ink-muted transition-colors">
                 {showPassword
                   ? <EyeOff className="w-4 h-4" />
                   : <Eye className="w-4 h-4" />}
@@ -149,33 +147,30 @@ export function LoginForm() {
             )}
           </div>
 
-          {/* Submit */}
           <button type="submit" disabled={isSubmitting}
             className="btn-accent mt-2 disabled:opacity-60 disabled:cursor-not-allowed">
             {isSubmitting ? (
               <span className="flex items-center gap-2">
-                <Spinner /> Connexion…
+                <Spinner /> {t('loggingIn')}
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                Se connecter <ArrowRight className="w-4 h-4" />
+                {t('loginBtn')} <ArrowRight className="w-4 h-4 rtl:rotate-180" />
               </span>
             )}
           </button>
         </form>
 
-        {/* Divider */}
         <div className="flex items-center gap-3">
           <div className="flex-1 h-px bg-[#E8E5E0]" />
-          <span className="text-[11px] text-ink-faint uppercase tracking-wider">ou</span>
+          <span className="text-[11px] text-ink-faint uppercase tracking-wider">{t('or')}</span>
           <div className="flex-1 h-px bg-[#E8E5E0]" />
         </div>
 
-        {/* Lien register */}
         <p className="text-center text-sm text-ink-muted">
-          Pas encore de compte ?{' '}
+          {t('noAccount')}{' '}
           <Link href="/register" className="text-accent font-medium hover:underline">
-            Créer un compte
+            {t('register')}
           </Link>
         </p>
       </div>

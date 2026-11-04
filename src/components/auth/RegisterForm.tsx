@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Check } from 'lucide-react';
@@ -12,17 +13,11 @@ import { apiClient } from '@/lib/api/client';
 import { User as UserType, AuthTokens } from '@/types';
 import { cn } from '@/lib/utils';
 
-// Critères de validation du mot de passe
-const PASSWORD_RULES = [
-  { label: '8 caractères minimum',  test: (p: string) => p.length >= 8 },
-  { label: 'Une majuscule',          test: (p: string) => /[A-Z]/.test(p) },
-  { label: 'Un chiffre',             test: (p: string) => /[0-9]/.test(p) },
-];
-
 export function RegisterForm() {
-  const [showPassword,  setShowPassword]  = useState(false);
-  const [showConfirm,   setShowConfirm]   = useState(false);
-  const [serverError,   setServerError]   = useState('');
+  const t = useTranslations('auth');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm,  setShowConfirm]  = useState(false);
+  const [serverError,  setServerError]  = useState('');
   const { setUser } = useAuthStore();
   const router = useRouter();
 
@@ -35,31 +30,37 @@ export function RegisterForm() {
 
   const passwordValue = watch('password', '');
 
+  const PASSWORD_RULES = [
+    { label: t('ruleMin'),   test: (p: string) => p.length >= 8 },
+    { label: t('ruleUpper'), test: (p: string) => /[A-Z]/.test(p) },
+    { label: t('ruleDigit'), test: (p: string) => /[0-9]/.test(p) },
+  ];
+
   async function onSubmit(data: RegisterInput) {
-  setServerError('');
-  try {
-    const res = await apiClient.post<{ user: UserType; tokens: AuthTokens }>(
-      '/auth/register',
-      { 
-        name: data.name, 
-        email: data.email, 
-        password: data.password,
-        confirmPassword: data.confirmPassword  // ← ajoute cette ligne
-      }
-    );
-   try { localStorage.setItem('access_token', res.tokens.accessToken); } catch {}
-    setUser(res.user, res.tokens.accessToken);
-    router.push('/feed');
-  } catch (err: unknown) {
-    const e = err as { message?: string };
-    setServerError(e?.message || 'Une erreur est survenue.');
+    setServerError('');
+    try {
+      const res = await apiClient.post<{ user: UserType; tokens: AuthTokens }>(
+        '/auth/register',
+        {
+          name:            data.name,
+          email:           data.email,
+          password:        data.password,
+          confirmPassword: data.confirmPassword,
+        }
+      );
+      try { localStorage.setItem('access_token', res.tokens.accessToken); } catch {}
+      setUser(res.user, res.tokens.accessToken);
+      router.push('/feed');
+    } catch (err: unknown) {
+      const e = err as { message?: string };
+      setServerError(e?.message || t('errorGeneric'));
+    }
   }
-}
 
   return (
     <div className="w-full max-w-sm mx-auto flex flex-col min-h-screen">
 
-      {/* ── Dark Hero ─────────────────────────────────────── */}
+      {/* Hero */}
       <div className="dark-hero flex-shrink-0 h-52 flex flex-col items-center justify-center px-8">
         <div className="hero-orb-1" />
         <div className="hero-orb-2" />
@@ -80,14 +81,13 @@ export function RegisterForm() {
         </div>
       </div>
 
-      {/* ── Formulaire ────────────────────────────────────── */}
+      {/* Formulaire */}
       <div className="flex-1 bg-bg px-6 py-6 flex flex-col gap-5">
         <div>
-          <h2 className="font-display font-bold text-2xl text-ink">Créer un compte ✨</h2>
-          <p className="text-sm text-ink-muted mt-1">Rejoignez TechnoFind gratuitement</p>
+          <h2 className="font-display font-bold text-2xl text-ink">{t('createTitle')}</h2>
+          <p className="text-sm text-ink-muted mt-1">{t('createHint')}</p>
         </div>
 
-        {/* Erreur serveur */}
         {serverError && (
           <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl
             bg-[#FEF2F2] border border-[#FECACA] text-[#DC2626] text-sm">
@@ -99,9 +99,9 @@ export function RegisterForm() {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 
           {/* Nom */}
-          <Field label="Nom complet" error={errors.name?.message}>
+          <Field label={t('name')} error={errors.name?.message}>
             <div className="relative flex items-center">
-              <User className="absolute left-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
+              <User className="absolute start-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
               <input
                 {...register('name')}
                 type="text"
@@ -113,9 +113,9 @@ export function RegisterForm() {
           </Field>
 
           {/* Email */}
-          <Field label="Adresse email" error={errors.email?.message}>
+          <Field label={t('email')} error={errors.email?.message}>
             <div className="relative flex items-center">
-              <Mail className="absolute left-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
+              <Mail className="absolute start-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
               <input
                 {...register('email')}
                 type="email"
@@ -127,22 +127,21 @@ export function RegisterForm() {
           </Field>
 
           {/* Mot de passe */}
-          <Field label="Mot de passe" error={errors.password?.message}>
+          <Field label={t('password')} error={errors.password?.message}>
             <div className="relative flex items-center">
-              <Lock className="absolute left-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
+              <Lock className="absolute start-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
               <input
                 {...register('password')}
                 type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 autoComplete="new-password"
-                className={cn(inputClass(!!errors.password), 'pr-10')}
+                className={cn(inputClass(!!errors.password), 'pe-10')}
               />
               <button type="button" onClick={() => setShowPassword(s => !s)}
-                className="absolute right-3.5 text-ink-faint hover:text-ink-muted transition-colors">
+                className="absolute end-3.5 text-ink-faint hover:text-ink-muted transition-colors">
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
-            {/* Critères du mot de passe */}
             {passwordValue && (
               <div className="flex flex-col gap-1 mt-2">
                 {PASSWORD_RULES.map(rule => {
@@ -168,43 +167,41 @@ export function RegisterForm() {
           </Field>
 
           {/* Confirmation */}
-          <Field label="Confirmer le mot de passe" error={errors.confirmPassword?.message}>
+          <Field label={t('confirmPassword')} error={errors.confirmPassword?.message}>
             <div className="relative flex items-center">
-              <Lock className="absolute left-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
+              <Lock className="absolute start-3.5 w-4 h-4 text-ink-faint pointer-events-none" />
               <input
                 {...register('confirmPassword')}
                 type={showConfirm ? 'text' : 'password'}
                 placeholder="••••••••"
                 autoComplete="new-password"
-                className={cn(inputClass(!!errors.confirmPassword), 'pr-10')}
+                className={cn(inputClass(!!errors.confirmPassword), 'pe-10')}
               />
               <button type="button" onClick={() => setShowConfirm(s => !s)}
-                className="absolute right-3.5 text-ink-faint hover:text-ink-muted transition-colors">
+                className="absolute end-3.5 text-ink-faint hover:text-ink-muted transition-colors">
                 {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </Field>
 
-          {/* Submit */}
           <button type="submit" disabled={isSubmitting}
             className="btn-accent mt-1 disabled:opacity-60 disabled:cursor-not-allowed">
             {isSubmitting ? (
               <span className="flex items-center gap-2">
-                <Spinner /> Création du compte…
+                <Spinner /> {t('creating')}
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                Créer mon compte <ArrowRight className="w-4 h-4" />
+                {t('registerBtn')} <ArrowRight className="w-4 h-4 rtl:rotate-180" />
               </span>
             )}
           </button>
         </form>
 
-        {/* Lien login */}
         <p className="text-center text-sm text-ink-muted">
-          Déjà un compte ?{' '}
+          {t('hasAccount')}{' '}
           <Link href="/login" className="text-accent font-medium hover:underline">
-            Se connecter
+            {t('login')}
           </Link>
         </p>
       </div>
@@ -212,7 +209,6 @@ export function RegisterForm() {
   );
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
 function Field({ label, error, children }: {
   label:    string;
   error?:   string;
@@ -231,7 +227,7 @@ function Field({ label, error, children }: {
 
 function inputClass(hasError: boolean) {
   return cn(
-    'w-full h-12 pl-10 pr-4 rounded-xl border bg-surface text-ink text-sm',
+    'w-full h-12 ps-10 pe-4 rounded-xl border bg-surface text-ink text-sm',
     'placeholder:text-ink-faint outline-none transition-colors',
     'focus:border-accent focus:bg-white',
     hasError ? 'border-[#EF4444]' : 'border-[#E8E5E0]'
