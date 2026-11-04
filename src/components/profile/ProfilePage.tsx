@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 import {
   User, Mail, Bell, Palette, LayoutList,
   LogOut, ChevronRight, Check, Moon, Sun,
@@ -13,19 +14,9 @@ import { useLogout } from '@/lib/hooks/useAuth';
 import { usePushNotifications } from '@/lib/hooks/usePushNotifications';
 import { cn } from '@/lib/utils';
 
-const THEMES = [
-  { value: 'light',  label: 'Clair',   icon: Sun  },
-  { value: 'dark',   label: 'Sombre',  icon: Moon },
-  { value: 'system', label: 'Système', icon: Globe },
-];
-
-const LAYOUTS = [
-  { value: 'list',     label: 'Liste'    },
-  { value: 'grid',     label: 'Grille'   },
-  { value: 'magazine', label: 'Magazine' },
-];
-
 export function ProfilePage() {
+  const t      = useTranslations('profile');
+  const locale = useLocale();
   const { user, isAuthenticated } = useAuthStore();
   const { savedArticles, layout, setLayout } = useFeedStore();
   const logout = useLogout();
@@ -42,6 +33,18 @@ export function ProfilePage() {
     sendTestNotification,
   } = usePushNotifications();
 
+  const THEMES = [
+    { value: 'light',  label: t('light'),  icon: Sun   },
+    { value: 'dark',   label: t('dark'),   icon: Moon  },
+    { value: 'system', label: t('system'), icon: Globe },
+  ];
+
+  const LAYOUTS = [
+    { value: 'list',     label: t('list')     },
+    { value: 'grid',     label: t('grid')     },
+    { value: 'magazine', label: t('magazine') },
+  ];
+
   if (!isAuthenticated || !user) {
     return <NotConnected />;
   }
@@ -51,10 +54,12 @@ export function ProfilePage() {
     router.push('/login');
   }
 
+  const pushActive = isSubscribed || permission === 'granted';
+
   return (
     <div className="flex flex-col gap-5 max-w-lg mx-auto">
 
-      {/* ── Avatar + infos ──────────────────────────────── */}
+      {/* Avatar + infos */}
       <div className="card p-6 flex items-center gap-4">
         <div className="w-16 h-16 rounded-2xl bg-ink flex items-center justify-center
           text-white font-display font-bold text-2xl shrink-0">
@@ -69,34 +74,34 @@ export function ProfilePage() {
               ? 'bg-[#FEF9EC] text-[#B45309]'
               : 'bg-[#EDEAE5] text-ink-muted'
           )}>
-            {user.plan === 'premium' ? '⭐ Premium' : '🆓 Gratuit'}
+            {user.plan === 'premium' ? `⭐ ${t('premium')}` : `🆓 ${t('free')}`}
           </span>
         </div>
       </div>
 
-      {/* ── Stats ───────────────────────────────────────── */}
+      {/* Stats */}
       <div className="grid grid-cols-2 gap-3">
         <div className="card p-4 flex flex-col items-center gap-1">
           <div className="w-10 h-10 rounded-xl bg-[#FBF0EB] flex items-center justify-center">
             <Bookmark className="w-5 h-5 text-accent" />
           </div>
           <p className="font-display font-bold text-2xl text-ink">{savedArticles.length}</p>
-          <p className="text-[11px] text-ink-muted">Articles sauvegardés</p>
+          <p className="text-[11px] text-ink-muted text-center">{t('savedCount')}</p>
         </div>
         <div className="card p-4 flex flex-col items-center gap-1">
           <div className="w-10 h-10 rounded-xl bg-[#EFF6FF] flex items-center justify-center">
             <Globe className="w-5 h-5 text-[#2563EB]" />
           </div>
-          <p className="font-display font-bold text-2xl text-ink">FR</p>
-          <p className="text-[11px] text-ink-muted">Langue préférée</p>
+          <p className="font-display font-bold text-2xl text-ink">{locale.toUpperCase()}</p>
+          <p className="text-[11px] text-ink-muted text-center">{t('preferredLanguage')}</p>
         </div>
       </div>
 
-      {/* ── Apparence ───────────────────────────────────── */}
-      <Section title="Apparence" icon={<Palette className="w-4 h-4" />}>
+      {/* Apparence */}
+      <Section title={t('appearance')} icon={<Palette className="w-4 h-4" />}>
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-faint mb-2">
-            Thème
+            {t('theme')}
           </p>
           <div className="grid grid-cols-3 gap-2">
             {THEMES.map(({ value, label, icon: Icon }) => (
@@ -117,7 +122,7 @@ export function ProfilePage() {
 
         <div className="mt-4">
           <p className="text-[11px] font-semibold uppercase tracking-widest text-ink-faint mb-2">
-            Disposition du feed
+            {t('layout')}
           </p>
           <div className="grid grid-cols-3 gap-2">
             {LAYOUTS.map(({ value, label }) => (
@@ -137,82 +142,74 @@ export function ProfilePage() {
         </div>
       </Section>
 
-      {/* ── Notifications ───────────────────────────────── */}
-      <Section title="Notifications" icon={<Bell className="w-4 h-4" />}>
+      {/* Notifications */}
+      <Section title={t('notifications')} icon={<Bell className="w-4 h-4" />}>
         {!isSupported ? (
-          <p className="text-sm text-ink-muted">
-            Les notifications ne sont pas supportées sur ce navigateur.
-          </p>
+          <p className="text-sm text-ink-muted">{t('notSupported')}</p>
         ) : permission === 'denied' ? (
-          <p className="text-sm text-[#EF4444]">
-            Notifications bloquées. Autorisez-les dans les paramètres du navigateur.
-          </p>
+          <p className="text-sm text-[#EF4444]">{t('blocked')}</p>
         ) : (
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-medium text-ink">Notifications push</p>
-                <p className="text-[11px] text-ink-faint">Recevoir les breaking news</p>
+                <p className="text-sm font-medium text-ink">{t('pushNotif')}</p>
+                <p className="text-[11px] text-ink-faint">{t('pushDesc')}</p>
               </div>
               <button
                 onClick={subscribe}
                 disabled={isLoading}
                 className={cn(
                   'w-11 h-6 rounded-full transition-colors relative shrink-0 disabled:opacity-50',
-                  isSubscribed || permission === 'granted' ? 'bg-accent' : 'bg-[#EDEAE5]'
+                  pushActive ? 'bg-accent' : 'bg-[#EDEAE5]'
                 )}>
                 <span className={cn(
-                  'absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform',
-                  isSubscribed || permission === 'granted'
-                    ? 'translate-x-5'
-                    : 'translate-x-0.5'
+                  'absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-all',
+                  pushActive ? 'end-0.5' : 'start-0.5'
                 )} />
               </button>
             </div>
 
-            {(isSubscribed || permission === 'granted') && (
+            {pushActive && (
               <button onClick={sendTestNotification}
                 className="flex items-center justify-center gap-2 py-2 rounded-xl
                   border border-[#E8E5E0] text-sm text-ink-muted
                   hover:border-accent hover:text-accent transition-colors">
-                🔔 Tester la notification
+                🔔 {t('testNotif')}
               </button>
             )}
           </div>
         )}
       </Section>
 
-      {/* ── Compte ──────────────────────────────────────── */}
-      <Section title="Compte" icon={<User className="w-4 h-4" />}>
-        <MenuRow icon={<Mail className="w-4 h-4" />} label="Modifier l'email" />
-        <MenuRow icon={<Shield className="w-4 h-4" />} label="Changer le mot de passe" />
-        <MenuRow icon={<Globe className="w-4 h-4" />} label="Langue de l'interface" value="Français" />
+      {/* Compte */}
+      <Section title={t('account')} icon={<User className="w-4 h-4" />}>
+        <MenuRow icon={<Mail className="w-4 h-4" />}   label={t('editEmail')} />
+        <MenuRow icon={<Shield className="w-4 h-4" />} label={t('changePassword')} />
+        <MenuRow icon={<Globe className="w-4 h-4" />}  label={t('interfaceLanguage')} value={locale.toUpperCase()} />
       </Section>
 
-      {/* ── Déconnexion ─────────────────────────────────── */}
+      {/* Déconnexion */}
       {!showLogoutConfirm ? (
         <button onClick={() => setShowLogoutConfirm(true)}
           className="flex items-center justify-center gap-2 w-full py-3 rounded-xl
             border-2 border-[#FECACA] text-[#EF4444] text-sm font-medium
             hover:bg-[#FEF2F2] transition-colors">
           <LogOut className="w-4 h-4" />
-          Se déconnecter
+          {t('logout')}
         </button>
       ) : (
         <div className="card p-4 flex flex-col gap-3">
-          <p className="text-sm text-ink text-center font-medium">
-            Confirmer la déconnexion ?
-          </p>
+          <p className="text-sm text-ink text-center font-medium">{t('confirm')}</p>
           <div className="flex gap-2">
             <button onClick={() => setShowLogoutConfirm(false)}
               className="flex-1 py-2.5 rounded-xl border border-[#E8E5E0] text-sm
                 text-ink-muted hover:bg-[#EDEAE5] transition-colors">
-              Annuler
+              {t('cancel')}
             </button>
             <button onClick={handleLogout}
               className="flex-1 py-2.5 rounded-xl bg-[#EF4444] text-white text-sm
                 font-medium hover:opacity-90 transition-opacity">
-              Confirmer
+              {t('confirmBtn')}
             </button>
           </div>
         </div>
@@ -221,7 +218,6 @@ export function ProfilePage() {
   );
 }
 
-// ── Composants helper ─────────────────────────────────────────────────────────
 function Section({ title, icon, children }: {
   title:    string;
   icon:     React.ReactNode;
@@ -247,14 +243,15 @@ function MenuRow({ icon, label, value }: {
     <button className="flex items-center gap-3 w-full py-2
       hover:text-accent transition-colors group">
       <span className="text-ink-faint group-hover:text-accent transition-colors">{icon}</span>
-      <span className="flex-1 text-sm text-ink text-left">{label}</span>
+      <span className="flex-1 text-sm text-ink text-start">{label}</span>
       {value && <span className="text-[11px] text-ink-faint">{value}</span>}
-      <ChevronRight className="w-4 h-4 text-ink-faint group-hover:text-accent transition-colors" />
+      <ChevronRight className="w-4 h-4 text-ink-faint group-hover:text-accent transition-colors rtl:rotate-180" />
     </button>
   );
 }
 
 function NotConnected() {
+  const t      = useTranslations('profile');
   const router = useRouter();
   return (
     <div className="card flex flex-col items-center gap-4 py-16 text-center max-w-sm mx-auto">
@@ -262,14 +259,12 @@ function NotConnected() {
         <User className="w-8 h-8 text-ink-muted" />
       </div>
       <div>
-        <p className="font-display font-bold text-xl text-ink mb-2">Non connecté</p>
-        <p className="text-sm text-ink-muted">
-          Connectez-vous pour accéder à votre profil.
-        </p>
+        <p className="font-display font-bold text-xl text-ink mb-2">{t('notConnected')}</p>
+        <p className="text-sm text-ink-muted">{t('notConnectedHint')}</p>
       </div>
       <button onClick={() => router.push('/login')}
         className="btn-accent w-auto px-8">
-        Se connecter
+        {t('loginBtn')}
       </button>
     </div>
   );

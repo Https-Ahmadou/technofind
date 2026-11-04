@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useTranslations, useLocale } from 'next-intl';
 import { Bookmark, ExternalLink, Clock } from 'lucide-react';
 import { Article } from '@/types';
 import { timeAgo, estimateReadTime, cn } from '@/lib/utils';
@@ -28,11 +29,13 @@ interface ArticleCardProps {
 }
 
 export function ArticleCard({ article, layout = 'list', priority = false }: ArticleCardProps) {
+  const tc = useTranslations('categories');
   const { savedIds, toggleSaved, setSelectedArticle } = useFeedStore();
   const isSaved  = savedIds.includes(article.id);
   const image    = article.media?.[0];
   const readTime = article.readTime ?? estimateReadTime(article.content);
   const cat      = CAT_STYLES[article.category] ?? CAT_STYLES.monde;
+  const catLabel = article.category in CAT_STYLES ? tc(article.category) : article.category;
 
   if (layout === 'grid') {
     return (
@@ -50,8 +53,8 @@ export function ArticleCard({ article, layout = 'list', priority = false }: Arti
           </div>
         )}
         <div className="flex flex-col flex-1 p-4 gap-2.5">
-          <span className="badge text-[10px]" style={{ background: cat.bg, color: cat.text }}>
-            {article.category}
+          <span className="badge text-[10px] self-start" style={{ background: cat.bg, color: cat.text }}>
+            {catLabel}
           </span>
           <Link href={`/article/${encodeURIComponent(article.id)}`}
             onClick={() => setSelectedArticle(article)}>
@@ -75,7 +78,7 @@ export function ArticleCard({ article, layout = 'list', priority = false }: Arti
       <div className="flex flex-col flex-1 min-w-0 gap-2">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="badge text-[10px]" style={{ background: cat.bg, color: cat.text }}>
-            {article.category}
+            {catLabel}
           </span>
           <span className="text-[11px] text-ink-faint font-medium">{article.source.name}</span>
         </div>
@@ -110,9 +113,10 @@ export function ArticleCard({ article, layout = 'list', priority = false }: Arti
 }
 
 function Meta({ article, readTime }: { article: Article; readTime: number }) {
+  const locale = useLocale();
   return (
     <div className="flex items-center gap-3 text-[11px] text-ink-faint">
-      <span>{timeAgo(article.publishedAt)}</span>
+      <span>{timeAgo(article.publishedAt, locale)}</span>
       <span className="flex items-center gap-1">
         <Clock className="w-3 h-3" />{readTime} min
       </span>
@@ -125,10 +129,11 @@ function Actions({ article, isSaved, onToggle }: {
   isSaved:  boolean;
   onToggle: (id: string, article?: Article) => void;
 }) {
+  const t = useTranslations('article');
   return (
     <div className="flex items-center gap-0.5">
       <button onClick={() => onToggle(article.id, article)}
-        aria-label={isSaved ? 'Retirer' : 'Sauvegarder'}
+        aria-label={t('save')}
         className={cn(
           'w-7 h-7 flex items-center justify-center rounded-lg transition-colors',
           isSaved ? 'text-accent bg-accent/10' : 'text-ink-faint hover:text-accent hover:bg-[#FBF0EB]'
@@ -139,7 +144,7 @@ function Actions({ article, isSaved, onToggle }: {
       <ShareButton article={article} />
 
       <a href={article.url} target="_blank" rel="noopener noreferrer"
-        aria-label="Source"
+        aria-label={t('source')}
         className="w-7 h-7 flex items-center justify-center rounded-lg
           text-ink-faint hover:text-ink hover:bg-[#EDEAE5] transition-colors">
         <ExternalLink className="w-3.5 h-3.5" />
